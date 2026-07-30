@@ -1,3 +1,3 @@
 # Documentation for Grants Shared
 
-This folder contains documentation for the Grants Shared.
+This folder contains documentation for Grants Shared.
