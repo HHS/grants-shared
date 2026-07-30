@@ -10,7 +10,7 @@ on:
   pull_request:
     paths:
       - backend/grants_shared/**
-      - .github/workflows/ci-grants-shared.yml
+      - .github/workflows/ci-grants-shared-backend.yml
 
 defaults:
   run:
