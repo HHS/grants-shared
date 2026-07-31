@@ -1,11 +1,6 @@
 name: Publish Grants Shared Backend Package to PyPi
 on:
   workflow_dispatch:
-  # TODO - REMOVE - JUST USING THIS FOR TESTING INITIALLY
-  pull_request:
-    paths:
-      - backend/grants_shared/**
-      - .github/workflows/ci-grants-shared-backend.yml
 
 defaults:
   run:
