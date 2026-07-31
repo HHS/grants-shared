@@ -1,0 +1,37 @@
+services:
+  grants-shared:
+    build:
+      context: .
+      target: base
+      args:
+        - RUN_UID=${RUN_UID:-4000}
+        - RUN_USER=${RUN_USER:-grants-shared}
+    container_name: grants-shared
+    env_file: ./local.env
+    volumes:
+      - .:/grants_shared
+      # Override the dist folder so the build is isolated
+      # and doesn't override with what exists outside
+      - dist:/grants_shared/dist
+    networks:
+      - default
+
+  grants-shared-db:
+    image: postgres:17.5-alpine
+    container_name: grants-shared-db
+    command: postgres -c "log_lock_waits=on" -N 1000 -c "fsync=off"
+    environment:
+      POSTGRES_USER: grants_shared
+      POSTGRES_PASSWORD: secret123
+    ports:
+      # NOTE - we map the port differently as it's common our developers
+      # will do work in the simpler-grants/grants-management code as well which uses the default 5432 port
+      - "5489:5432"
+    volumes:
+      - grantsshareddbdata:/var/lib/postgresql/data
+    networks:
+      - default
+
+volumes:
+  dist:
+  grantsshareddbdata:

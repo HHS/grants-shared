@@ -13,15 +13,15 @@ An up-to-date list of core team members can be found in [MAINTAINERS.md](./MAINT
 ## Repository Structure
 
 - [./.github](./.github) contains Github specific settings files and testing, linting, and CI/CD workflows
-- [./api](./api) contains an API built in Python using the Flask library
+- [./backend](./backend) contains backend Python code
 - [./documentation](./documentation) contains project guides, documentation, and decision records
 - [./frontend](./frontend) contains a web application built using Next.js
 
 ## Development
 
-### API
+### Backend (Grants Shared)
 
-Documentation for the API is linked to from the [API README.md](./api/README.md).
+Documentation for the backend grants shared library is provided in [grants_shared README.md](./backend/grants_shared/README.md).
 
 ### Front-end
 
