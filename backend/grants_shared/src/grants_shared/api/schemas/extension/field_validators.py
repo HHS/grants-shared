@@ -114,8 +114,8 @@ class Length(validators.Length):
 
 
 class WordLimit(validators.WordLimit):
-    """Validator which succeeds if the value passed to it has equal
-    or fewer words than the provided limit.
+    """Validator which succeeds if the value passed to it has word count between
+    a minimum and maximum.
 
     :param min: The minimum word count. If not provided, minimum word count
         will not be checked.
