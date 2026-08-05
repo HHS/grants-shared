@@ -142,9 +142,9 @@ class WordLimit(validators.Validator):
 
     def __init__(
         self,
-        min: int = None,
-        max: int = None,
-        equal: int = None,
+        min: int | None = None,
+        max: int | None = None,
+        equal: int | None = None,
     ):
         """
         :param min: The minimum word count. If not provided, minimum word count
