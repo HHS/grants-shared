@@ -113,7 +113,7 @@ class Length(validators.Length):
         return value
 
 
-class WordLimit(validators.WordLimit):
+class WordLimit(validators.Validator):
     """Validator which succeeds if the value passed to it has word count between
     a minimum and maximum.
 
@@ -123,8 +123,6 @@ class WordLimit(validators.WordLimit):
         will not be checked.
     :param equal: The exact word count. If provided, maximum and minimum
         word count will not be checked.
-    :param error: Error message to raise in case of a validation error.
-        Can be interpolated with `{input}`, `{min}` and `{max}`.
     """
 
     error_mapping: dict[str, MarshmallowErrorContainer] = {
@@ -141,6 +139,24 @@ class WordLimit(validators.WordLimit):
             SchemaValidationError.EQUALS, "Word count must be {equal}."
         ),
     }
+
+    def __init__(
+            self,
+            min: int = None,
+            max: int = None,
+            equal: int = None,
+        ):
+            """
+            :param min: The minimum word count. If not provided, minimum word count
+                will not be checked.
+            :param max: The maximum word count. If not provided, maximum word count
+                will not be checked.
+            :param equal: The exact word count. If provided, maximum and minimum
+                word count will not be checked.
+            """
+            self.min = min
+            self.max = max
+            self.equal = equal
 
     def _make_error(self, key: str) -> ValidationError:
         try:
@@ -161,8 +177,8 @@ class WordLimit(validators.WordLimit):
 
         return ValidationError([error_container])
 
-    def __call__(self, value: _SizedT) -> _SizedT:
-        length = len(re.findall(r"\s+"), value.trim()) + 1
+    def __call__(self, value: str) -> str:
+        length = len(re.findall(r"\s+", value.strip())) + 1
 
         if self.equal is not None:
             if length != self.equal:
