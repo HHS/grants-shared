@@ -141,22 +141,22 @@ class WordLimit(validators.Validator):
     }
 
     def __init__(
-            self,
-            min: int = None,
-            max: int = None,
-            equal: int = None,
-        ):
-            """
-            :param min: The minimum word count. If not provided, minimum word count
-                will not be checked.
-            :param max: The maximum word count. If not provided, maximum word count
-                will not be checked.
-            :param equal: The exact word count. If provided, maximum and minimum
-                word count will not be checked.
-            """
-            self.min = min
-            self.max = max
-            self.equal = equal
+        self,
+        min: int = None,
+        max: int = None,
+        equal: int = None,
+    ):
+        """
+        :param min: The minimum word count. If not provided, minimum word count
+            will not be checked.
+        :param max: The maximum word count. If not provided, maximum word count
+            will not be checked.
+        :param equal: The exact word count. If provided, maximum and minimum
+            word count will not be checked.
+        """
+        self.min = min
+        self.max = max
+        self.equal = equal
 
     def _make_error(self, key: str) -> ValidationError:
         try:
