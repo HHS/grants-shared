@@ -127,16 +127,16 @@ class WordLimit(validators.Validator):
 
     error_mapping: dict[str, MarshmallowErrorContainer] = {
         "message_min": MarshmallowErrorContainer(
-            SchemaValidationError.MIN_LENGTH, "Shorter than minimum word count {min}."
+            SchemaValidationError.MIN_WORDS, "Shorter than minimum word count {min}."
         ),
         "message_max": MarshmallowErrorContainer(
-            SchemaValidationError.MAX_LENGTH, "Longer than maximum word count {max}."
+            SchemaValidationError.MAX_WORDS, "Longer than maximum word count {max}."
         ),
         "message_all": MarshmallowErrorContainer(
-            SchemaValidationError.MIN_OR_MAX_LENGTH, "Word count must be between {min} and {max}."
+            SchemaValidationError.MIN_OR_MAX_WORDS, "Word count must be between {min} and {max}."
         ),
         "message_equal": MarshmallowErrorContainer(
-            SchemaValidationError.EQUALS, "Word count must be {equal}."
+            SchemaValidationError.EQUALS_WORDS, "Word count must be {equal}."
         ),
     }
 

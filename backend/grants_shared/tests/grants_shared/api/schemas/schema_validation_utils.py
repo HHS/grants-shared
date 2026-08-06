@@ -79,24 +79,26 @@ def get_one_of_error_msg(choices: list[str]):
 
 def get_min_word_error_msg(length: int):
     return MarshmallowErrorContainer(
-        SchemaValidationError.MIN_LENGTH, f"Shorter than minimum word count {length}."
+        SchemaValidationError.MIN_WORDS, f"Shorter than minimum word count {length}."
     )
 
 
 def get_max_word_error_msg(length: int):
     return MarshmallowErrorContainer(
-        SchemaValidationError.MAX_LENGTH, f"Longer than maximum word count {length}."
+        SchemaValidationError.MAX_WORDS, f"Longer than maximum word count {length}."
     )
 
 
 def get_word_range_error_msg(min: int, max: int):
     return MarshmallowErrorContainer(
-        SchemaValidationError.MIN_OR_MAX_LENGTH, f"Word count must be between {min} and {max}."
+        SchemaValidationError.MIN_OR_MAX_WORDS, f"Word count must be between {min} and {max}."
     )
 
 
 def get_word_equal_error_msg(equal: int):
-    return MarshmallowErrorContainer(SchemaValidationError.EQUALS, f"Word count must be {equal}.")
+    return MarshmallowErrorContainer(
+        SchemaValidationError.EQUALS_WORDS, f"Word count must be {equal}."
+    )
 
 
 def get_min_length_error_msg(length: int):
