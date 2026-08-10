@@ -18,6 +18,11 @@ class SchemaValidationError(StrEnum):
     MIN_OR_MAX_LENGTH = "min_or_max_length"
     EQUALS = "equals"
 
+    MIN_WORDS = "min_words"
+    MAX_WORDS = "max_words"
+    MIN_OR_MAX_WORDS = "min_or_max_words"
+    EQUALS_WORDS = "equals_words"
+
     MIN_VALUE = "min_value"
     MAX_VALUE = "max_value"
     MIN_OR_MAX_VALUE = "min_or_max_value"

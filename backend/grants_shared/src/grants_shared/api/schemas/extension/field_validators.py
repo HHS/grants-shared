@@ -1,4 +1,5 @@
 import copy
+import re
 import typing
 
 from apiflask import validators  # noqa: TID251
@@ -95,6 +96,89 @@ class Length(validators.Length):
 
     def __call__(self, value: _SizedT) -> _SizedT:
         length = len(value)
+
+        if self.equal is not None:
+            if length != self.equal:
+                raise self._make_error("message_equal")
+            return value
+
+        if self.min is not None and length < self.min:
+            key = "message_min" if self.max is None else "message_all"
+            raise self._make_error(key)
+
+        if self.max is not None and length > self.max:
+            key = "message_max" if self.min is None else "message_all"
+            raise self._make_error(key)
+
+        return value
+
+
+class WordLimit(validators.Validator):
+    """Validator which succeeds if the value passed to it has word count between
+    a minimum and maximum.
+
+    :param min: The minimum word count. If not provided, minimum word count
+        will not be checked.
+    :param max: The maximum word count. If not provided, maximum word count
+        will not be checked.
+    :param equal: The exact word count. If provided, maximum and minimum
+        word count will not be checked.
+    """
+
+    error_mapping: dict[str, MarshmallowErrorContainer] = {
+        "message_min": MarshmallowErrorContainer(
+            SchemaValidationError.MIN_WORDS, "Shorter than minimum word count {min}."
+        ),
+        "message_max": MarshmallowErrorContainer(
+            SchemaValidationError.MAX_WORDS, "Longer than maximum word count {max}."
+        ),
+        "message_all": MarshmallowErrorContainer(
+            SchemaValidationError.MIN_OR_MAX_WORDS, "Word count must be between {min} and {max}."
+        ),
+        "message_equal": MarshmallowErrorContainer(
+            SchemaValidationError.EQUALS_WORDS, "Word count must be {equal}."
+        ),
+    }
+
+    def __init__(
+        self,
+        min: int | None = None,
+        max: int | None = None,
+        equal: int | None = None,
+    ):
+        """
+        :param min: The minimum word count. If not provided, minimum word count
+            will not be checked.
+        :param max: The maximum word count. If not provided, maximum word count
+            will not be checked.
+        :param equal: The exact word count. If provided, maximum and minimum
+            word count will not be checked.
+        """
+        self.min = min
+        self.max = max
+        self.equal = equal
+
+    def _make_error(self, key: str) -> ValidationError:
+        try:
+            # Make a copy of the error mapping so we aren't modifying
+            # the class-level configurations above when we do formatting
+            error_container = copy.copy(self.error_mapping[key])
+        except KeyError as error:
+            class_name = self.__class__.__name__
+            message = (
+                f"ValidationError raised by `{class_name}`, but error key `{key}` does "
+                "not exist in the `error_messages` dictionary."
+            )
+            raise AssertionError(message) from error
+
+        error_container.message = error_container.message.format(
+            min=self.min, max=self.max, equal=self.equal
+        )
+
+        return ValidationError([error_container])
+
+    def __call__(self, value: str) -> str:
+        length = len(re.findall(r"\s+", value.strip())) + 1
 
         if self.equal is not None:
             if length != self.equal:

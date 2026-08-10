@@ -77,6 +77,30 @@ def get_one_of_error_msg(choices: list[str]):
     )
 
 
+def get_min_word_error_msg(length: int):
+    return MarshmallowErrorContainer(
+        SchemaValidationError.MIN_WORDS, f"Shorter than minimum word count {length}."
+    )
+
+
+def get_max_word_error_msg(length: int):
+    return MarshmallowErrorContainer(
+        SchemaValidationError.MAX_WORDS, f"Longer than maximum word count {length}."
+    )
+
+
+def get_word_range_error_msg(min: int, max: int):
+    return MarshmallowErrorContainer(
+        SchemaValidationError.MIN_OR_MAX_WORDS, f"Word count must be between {min} and {max}."
+    )
+
+
+def get_word_equal_error_msg(equal: int):
+    return MarshmallowErrorContainer(
+        SchemaValidationError.EQUALS_WORDS, f"Word count must be {equal}."
+    )
+
+
 def get_min_length_error_msg(length: int):
     return MarshmallowErrorContainer(
         SchemaValidationError.MIN_LENGTH, f"Shorter than minimum length {length}."
@@ -199,6 +223,10 @@ class FieldTestSchema(Schema):
     field_str_max = fields.String(validate=[validators.Length(max=3)])
     field_str_min_and_max = fields.String(validate=[validators.Length(min=2, max=3)])
     field_str_equal = fields.String(validate=[validators.Length(equal=3)])
+    field_word_min = fields.String(validate=[validators.WordLimit(min=2)])
+    field_word_max = fields.String(validate=[validators.WordLimit(max=3)])
+    field_word_min_and_max = fields.String(validate=[validators.WordLimit(min=2, max=3)])
+    field_word_equal = fields.String(validate=[validators.WordLimit(equal=2)])
     field_str_regex = fields.String(validate=[validators.Regexp("^\\d{3}$")])
     field_str_regex_msg = fields.String(
         validate=[validators.Regexp("^\\d{3}$", error_message="This is the override error")]
@@ -285,6 +313,10 @@ def get_valid_field_test_schema_req():
         "field_str_max": "a",
         "field_str_min_and_max": "ab",
         "field_str_equal": "abc",
+        "field_word_min": "abc abc",
+        "field_word_max": "abc abc abc",
+        "field_word_min_and_max": "abc abc",
+        "field_word_equal": "abc abc",
         "field_str_regex": "123",
         "field_str_regex_msg": "123",
         "field_str_email": "person@example.com",
@@ -354,6 +386,10 @@ def get_invalid_field_test_schema_req():
         "field_str_max": "abcdef",
         "field_str_min_and_max": "a",
         "field_str_equal": "a",
+        "field_word_min": "abc",
+        "field_word_max": "abc abc abc abc",
+        "field_word_min_and_max": "abc abc abc abc",
+        "field_word_equal": "abc abc abc",
         "field_str_regex": "abc",
         "field_str_regex_msg": "abc",
         "field_str_email": "not an email",
@@ -421,6 +457,10 @@ def get_expected_validation_errors():
         "field_str_max": [get_max_length_error_msg(3)],
         "field_str_min_and_max": [get_length_range_error_msg(2, 3)],
         "field_str_equal": [get_length_equal_error_msg(3)],
+        "field_word_min": [get_min_word_error_msg(2)],
+        "field_word_max": [get_max_word_error_msg(3)],
+        "field_word_min_and_max": [get_word_range_error_msg(2, 3)],
+        "field_word_equal": [get_word_equal_error_msg(2)],
         "field_str_regex": [INVALID_STRING_PATTERN],
         "field_str_regex_msg": [
             MarshmallowErrorContainer(SchemaValidationError.FORMAT, "This is the override error")
