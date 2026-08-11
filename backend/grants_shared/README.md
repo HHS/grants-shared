@@ -41,7 +41,7 @@ uv version --bump patch
 
 ### Release to PyPi
 After your change has been merged to main, you can
-publish a new release in PyPi with our [Github action](https://github.com/HHS/grants-shared/actions/workflows/publish-grants-shared.yml)
+publish a new release in PyPi with our [Github action](https://github.com/HHS/grants-shared/actions/workflows/publish-grants-shared-backend.yml)
 
 
 ## Usage

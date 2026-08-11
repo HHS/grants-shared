@@ -77,6 +77,7 @@ ALLOW_NO_MASK = {
     "hostname",
     "process",
     "thread",
+    "file_size_bytes",
 }
 
 

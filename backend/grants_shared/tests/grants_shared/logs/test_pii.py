@@ -65,3 +65,28 @@ def test_mask_pii_logging_floats(input_value, expected_output):
 
     # Check that the message was properly masked
     assert record.msg == expected_output
+
+
+def test_mask_pii_skips_allowed_fields():
+    record = logging.LogRecord(
+        name="test",
+        level=logging.INFO,
+        pathname="test.py",
+        lineno=1,
+        msg="hello",
+        args=(),
+        exc_info=None,
+    )
+
+    # Extra values just get added as fields to the log record
+    record.__dict__["some_field"] = "123-45-6789"
+    record.__dict__["file_size_bytes"] = "123-45-6789"
+    record.__dict__["another_field"] = "host 123456789"
+    record.__dict__["hostname"] = "host 123456789"
+
+    pii.mask_pii(record)
+
+    assert record.some_field == "*********"
+    assert record.file_size_bytes == "123-45-6789"
+    assert record.another_field == "host *********"
+    assert record.hostname == "host 123456789"
