@@ -5,6 +5,9 @@ from marshmallow import EXCLUDE
 
 from grants_shared.api.schemas.extension.schema_common import MarshmallowErrorContainer
 from grants_shared.api.schemas.extension.schema_validation_error import SchemaValidationError
+from grants_shared.api.schemas.extension.schema_validators import (
+    RelationalValidationMetadata,
+)
 
 
 class Schema(apiflask.Schema):  # noqa: TID251
@@ -17,16 +20,18 @@ class Schema(apiflask.Schema):  # noqa: TID251
         dict[str, str],
         {
             "type": MarshmallowErrorContainer(
-                key=SchemaValidationError.INVALID, message="Invalid input type."
+                key=SchemaValidationError.INVALID, message="Invalid input type.",
             ),
             "unknown": MarshmallowErrorContainer(
-                key=SchemaValidationError.UNKNOWN, message="Unknown field."
+                key=SchemaValidationError.UNKNOWN, message="Unknown field.",
             ),
         },
     )
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
+
+        self.relational_validations = self._get_relational_validations()
 
         # In order for the OpenAPI docs to display correctly
         # we need to set sub-schemas as partial=True, as the
@@ -44,6 +49,25 @@ class Schema(apiflask.Schema):  # noqa: TID251
                 if hasattr(field, "inner"):
                     if hasattr(field.inner, "nested"):
                         field.inner.nested.partial = True
+
+    def _get_relational_validations(
+        self,
+    ) -> list[RelationalValidationMetadata]:
+        validations: list[RelationalValidationMetadata] = []
+
+        for attribute_name in dir(self):
+            attribute = getattr(self, attribute_name)
+
+            metadata = getattr(
+                attribute,
+                "__relational_validation__",
+                None,
+            )
+
+            if metadata is not None:
+                validations.append(metadata)
+
+        return validations
 
     class Meta:
         # Ignore any extra fields
