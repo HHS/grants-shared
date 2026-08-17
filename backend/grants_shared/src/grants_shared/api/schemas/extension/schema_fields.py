@@ -7,6 +7,7 @@ from marshmallow import ValidationError
 
 from grants_shared.api.schemas.extension.field_validators import URL as CustomURL
 from grants_shared.api.schemas.extension.field_validators import Range
+from grants_shared.api.schemas.extension.field_validators import Email as CustomEmail
 from grants_shared.api.schemas.extension.schema_common import MarshmallowErrorContainer
 from grants_shared.api.schemas.extension.schema_validation_error import SchemaValidationError
 
@@ -41,9 +42,22 @@ class MixinField(original_fields.Field):
     def __init__(self, **kwargs: typing.Any) -> None:
         super().__init__(**kwargs)
 
+        if isinstance(self.load_default, enum.Enum):
+            self.metadata["default"] = self.load_default.value
+
+        example = self.metadata.get("example")
+
+        if isinstance(example, enum.Enum):
+            self.metadata["example"] = example.value
+        elif isinstance(example, list):
+            self.metadata["example"] = [
+                item.value if isinstance(item, enum.Enum) else item
+                for item in example
+            ]
+
         # The actual error mapping used for a specific instance
         self._error_mapping: dict[str, MarshmallowErrorContainer] = {}
-
+        
         # This iterates over all classes and updates the error
         # mapping with the most-specific class values overriding
         # the most generic.
@@ -81,6 +95,12 @@ class String(original_fields.String, MixinField):
             SchemaValidationError.INVALID, "Not a valid utf-8 string."
         ),
     }
+
+    def __init__(self, **kwargs: typing.Any) -> None:
+        super().__init__(**kwargs)
+
+        if any(isinstance(validator, CustomEmail) for validator in self.validators):
+            self.metadata["format"] = "email"
 
 
 class Integer(original_fields.Integer, MixinField):
