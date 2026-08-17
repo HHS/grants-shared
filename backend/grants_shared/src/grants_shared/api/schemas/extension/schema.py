@@ -1,3 +1,4 @@
+import os
 from typing import Any, cast
 
 import apiflask
@@ -31,7 +32,8 @@ class Schema(apiflask.Schema):  # noqa: TID251
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
-        self.relational_validations = self._get_relational_validations()
+        if os.getenv("INCLUDE_RELATIONAL_VALIDATIONS_IN_OPENAPI") == "true":
+            self.relational_validations = self._get_relational_validations()
 
         # In order for the OpenAPI docs to display correctly
         # we need to set sub-schemas as partial=True, as the
