@@ -5,12 +5,8 @@ from functools import wraps
 
 from marshmallow import ValidationError, validates_schema
 
-from grants_shared.api.schemas.extension.schema_common import (
-    MarshmallowErrorContainer,
-)
-from grants_shared.api.schemas.extension.schema_validation_error import (
-    SchemaValidationError,
-)
+from grants_shared.api.schemas.extension.schema_common import MarshmallowErrorContainer
+from grants_shared.api.schemas.extension.schema_validation_error import SchemaValidationError
 
 
 class RelationalValidationOperator(enum.StrEnum):
@@ -43,6 +39,18 @@ class RelationalValidationMetadata(typing.TypedDict):
     error_type: str
     validation_type: str
     message: str
+
+
+class RelationalValidationCallable(typing.Protocol):
+    __relational_validation__: RelationalValidationMetadata
+
+    def __call__(
+        self,
+        self_: typing.Any,
+        data: dict[str, typing.Any],
+        **kwargs: typing.Any,
+    ) -> None: ...
+
 
 def relational_validation(
     *,
@@ -94,8 +102,9 @@ def relational_validation(
             "message": message,
         }
 
-        setattr(wrapper, "__relational_validation__", metadata)
+        typed_wrapper = typing.cast(RelationalValidationCallable, wrapper)
+        typed_wrapper.__relational_validation__ = metadata
 
-        return validates_schema(wrapper)
+        return validates_schema(typed_wrapper)
 
     return decorator

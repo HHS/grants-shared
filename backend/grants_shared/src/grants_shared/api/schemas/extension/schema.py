@@ -5,9 +5,7 @@ from marshmallow import EXCLUDE
 
 from grants_shared.api.schemas.extension.schema_common import MarshmallowErrorContainer
 from grants_shared.api.schemas.extension.schema_validation_error import SchemaValidationError
-from grants_shared.api.schemas.extension.schema_validators import (
-    RelationalValidationMetadata,
-)
+from grants_shared.api.schemas.extension.schema_validators import RelationalValidationMetadata
 
 
 class Schema(apiflask.Schema):  # noqa: TID251
@@ -20,10 +18,12 @@ class Schema(apiflask.Schema):  # noqa: TID251
         dict[str, str],
         {
             "type": MarshmallowErrorContainer(
-                key=SchemaValidationError.INVALID, message="Invalid input type.",
+                key=SchemaValidationError.INVALID,
+                message="Invalid input type.",
             ),
             "unknown": MarshmallowErrorContainer(
-                key=SchemaValidationError.UNKNOWN, message="Unknown field.",
+                key=SchemaValidationError.UNKNOWN,
+                message="Unknown field.",
             ),
         },
     )

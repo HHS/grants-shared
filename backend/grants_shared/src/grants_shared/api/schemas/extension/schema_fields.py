@@ -6,8 +6,8 @@ from apiflask import fields as original_fields  # noqa: TID251
 from marshmallow import ValidationError
 
 from grants_shared.api.schemas.extension.field_validators import URL as CustomURL
-from grants_shared.api.schemas.extension.field_validators import Range
 from grants_shared.api.schemas.extension.field_validators import Email as CustomEmail
+from grants_shared.api.schemas.extension.field_validators import Range
 from grants_shared.api.schemas.extension.schema_common import MarshmallowErrorContainer
 from grants_shared.api.schemas.extension.schema_validation_error import SchemaValidationError
 
@@ -51,13 +51,12 @@ class MixinField(original_fields.Field):
             self.metadata["example"] = example.value
         elif isinstance(example, list):
             self.metadata["example"] = [
-                item.value if isinstance(item, enum.Enum) else item
-                for item in example
+                item.value if isinstance(item, enum.Enum) else item for item in example
             ]
 
         # The actual error mapping used for a specific instance
         self._error_mapping: dict[str, MarshmallowErrorContainer] = {}
-        
+
         # This iterates over all classes and updates the error
         # mapping with the most-specific class values overriding
         # the most generic.
