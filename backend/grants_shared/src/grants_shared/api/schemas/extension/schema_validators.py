@@ -35,10 +35,6 @@ class RelationalValidationMetadata(typing.TypedDict):
     left_field: str
     operator: str
     right_field: str
-    target_fields: list[str]
-    error_type: str
-    validation_type: str
-    message: str
 
 
 class RelationalValidationCallable(typing.Protocol):
@@ -57,9 +53,6 @@ def relational_validation(
     left_field: str,
     operator: RelationalValidationOperator,
     right_field: str,
-    target_fields: list[str],
-    error_type: SchemaValidationError,
-    validation_type: str,
     message: str,
 ) -> typing.Callable:
     def decorator(
@@ -84,7 +77,7 @@ def relational_validation(
                 raise ValidationError(
                     [
                         MarshmallowErrorContainer(
-                            error_type,
+                            SchemaValidationError.INVALID,
                             message,
                         )
                     ]
@@ -96,10 +89,6 @@ def relational_validation(
             "left_field": left_field,
             "operator": operator.value,
             "right_field": right_field,
-            "target_fields": target_fields,
-            "error_type": error_type.value,
-            "validation_type": validation_type,
-            "message": message,
         }
 
         typed_wrapper = typing.cast(RelationalValidationCallable, wrapper)
