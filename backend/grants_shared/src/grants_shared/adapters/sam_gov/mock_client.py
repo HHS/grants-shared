@@ -5,10 +5,9 @@ import logging
 import os
 import shutil
 
-from grants_shared.util.file_util import copy_file, open_stream
-
 from grants_shared.adapters.sam_gov.client import BaseSamGovClient
 from grants_shared.adapters.sam_gov.models import SamExtractRequest, SamExtractResponse
+from grants_shared.util.file_util import copy_file, open_stream
 
 logger = logging.getLogger(__name__)
 

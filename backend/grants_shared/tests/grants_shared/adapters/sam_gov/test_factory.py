@@ -51,7 +51,8 @@ class TestSamGovClientFactory:
         monkeypatch.setenv("SAM_GOV_MOCK_EXTRACT_DIR", "/path/to/extracts")
 
         with mock.patch(
-            "grants_shared.adapters.sam_gov.mock_client.MockSamGovClient.__init__", return_value=None
+            "grants_shared.adapters.sam_gov.mock_client.MockSamGovClient.__init__",
+            return_value=None,
         ) as mock_init:
             config = SamGovConfig(
                 use_mock=True,
