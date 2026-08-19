@@ -43,9 +43,6 @@ class TestMockSamGovClient:
             # Verify the extract metadata
             assert response is not None
             assert response.file_name == output_path
-            # These fields were removed from the model
-            # assert response.content_type == "application/zip"
-            # assert response.sensitivity == SensitivityLevel.PUBLIC
 
             # Verify the file was created
             assert os.path.exists(output_path)
