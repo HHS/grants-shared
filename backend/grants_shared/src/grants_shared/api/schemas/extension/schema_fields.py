@@ -6,7 +6,6 @@ from apiflask import fields as original_fields  # noqa: TID251
 from marshmallow import ValidationError
 
 from grants_shared.api.schemas.extension.field_validators import URL as CustomURL
-from grants_shared.api.schemas.extension.field_validators import Email as CustomEmail
 from grants_shared.api.schemas.extension.field_validators import Range
 from grants_shared.api.schemas.extension.schema_common import MarshmallowErrorContainer
 from grants_shared.api.schemas.extension.schema_validation_error import SchemaValidationError
@@ -42,9 +41,6 @@ class MixinField(original_fields.Field):
     def __init__(self, **kwargs: typing.Any) -> None:
         super().__init__(**kwargs)
 
-        if isinstance(self.load_default, enum.Enum):
-            self.metadata["default"] = self.load_default.value
-
         example = self.metadata.get("example")
 
         if isinstance(example, enum.Enum):
@@ -53,6 +49,16 @@ class MixinField(original_fields.Field):
             self.metadata["example"] = [
                 item.value if isinstance(item, enum.Enum) else item for item in example
             ]
+
+        for validator in self.validators:
+            get_openapi_metadata = getattr(
+                validator,
+                "get_openapi_metadata",
+                None,
+            )
+
+            if get_openapi_metadata is not None:
+                self.metadata.update(get_openapi_metadata())
 
         # The actual error mapping used for a specific instance
         self._error_mapping: dict[str, MarshmallowErrorContainer] = {}
@@ -94,12 +100,6 @@ class String(original_fields.String, MixinField):
             SchemaValidationError.INVALID, "Not a valid utf-8 string."
         ),
     }
-
-    def __init__(self, **kwargs: typing.Any) -> None:
-        super().__init__(**kwargs)
-
-        if any(isinstance(validator, CustomEmail) for validator in self.validators):
-            self.metadata["format"] = "email"
 
 
 class Integer(original_fields.Integer, MixinField):
@@ -251,6 +251,12 @@ class Enum(MixinField):
         self.choices_text = ", ".join(possible_choices)
         # Set the enum metadata
         self.metadata["enum"] = possible_choices
+
+        # Enum defaults need to be represented by their serialized value in
+        # generated OpenAPI rather than by the Python Enum object.
+        if isinstance(self.load_default, enum.Enum):
+            self.metadata["default"] = self.load_default.value
+
         # Set the type so Swagger will know it's an enum-string
         if self.metadata.get("type") is None:
             type_values = ["string"]

@@ -201,6 +201,11 @@ class Email(validators.Email):
         SchemaValidationError.FORMAT, "Not a valid email address."
     )
 
+    def get_openapi_metadata(self) -> dict[str, typing.Any]:
+        return {
+            "format": "email",
+        }
+
     def __call__(self, value: str) -> str:
         try:
             return super().__call__(value)
