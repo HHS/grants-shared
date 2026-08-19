@@ -6,6 +6,28 @@ from grants_shared.api.schemas.extension.schema import Schema
 
 
 class RelationalValidationOpenAPIPlugin(BasePlugin):
+    """APISpec plugin that adds relational validation metadata to OpenAPI schemas.
+
+    Schemas using ``@relational_validation`` expose their relational validation
+    rules through the ``x-relational-validations`` OpenAPI extension.
+
+    Register the plugin when creating an APIFlask application:
+
+        app = APIFlask(
+            __name__,
+            title="My API",
+            version="v1",
+            spec_plugins=[RelationalValidationOpenAPIPlugin()],
+        )
+
+    The generated OpenAPI schema will then include, for example:
+
+        x-relational-validations:
+          - left_field: award_floor
+            operator: less_than_or_equal
+            right_field: award_ceiling
+    """
+
     def schema_helper(
         self,
         name: str,

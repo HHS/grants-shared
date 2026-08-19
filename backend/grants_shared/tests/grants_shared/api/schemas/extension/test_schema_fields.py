@@ -3,7 +3,7 @@ import inspect
 import pytest
 from marshmallow import ValidationError
 
-from grants_shared.api.schemas.extension import fields
+from grants_shared.api.schemas.extension import fields, validators
 from tests.grants_shared.api.schemas.schema_validation_utils import (
     DummySchema,
     EnumA,
@@ -46,6 +46,79 @@ def test_enum_field():
         ValidationError, match="Must be one of: value1, value2, value3, value4, value5, value6."
     ):
         both_ab_field._deserialize({}, None, None)
+
+
+def test_enum_field_converts_enum_load_default_to_openapi_value():
+    field = fields.Enum(
+        EnumA,
+        load_default=EnumA.VALUE1,
+    )
+
+    assert field.load_default == EnumA.VALUE1
+    assert field.metadata["default"] == EnumA.VALUE1.value
+
+
+def test_field_converts_enum_example_to_openapi_value():
+    field = fields.String(
+        metadata={
+            "example": EnumA.VALUE1,
+        }
+    )
+
+    assert field.metadata["example"] == EnumA.VALUE1.value
+
+
+def test_field_converts_enum_list_example_to_openapi_values():
+    field = fields.String(
+        metadata={
+            "example": [
+                EnumA.VALUE1,
+                EnumA.VALUE2,
+                "not-an-enum",
+            ],
+        }
+    )
+
+    assert field.metadata["example"] == [
+        EnumA.VALUE1.value,
+        EnumA.VALUE2.value,
+        "not-an-enum",
+    ]
+
+
+def test_field_applies_validator_openapi_metadata():
+    field = fields.String(
+        validate=validators.Email(),
+    )
+
+    assert field.metadata["format"] == "email"
+
+
+def test_field_without_openapi_validator_metadata_does_not_set_format():
+    field = fields.String(
+        validate=validators.Length(max=100),
+    )
+
+    assert "format" not in field.metadata
+
+
+def test_field_applies_custom_validator_openapi_metadata():
+    class TestValidator(validators.Validator):
+        def __call__(self, value):
+            return value
+
+        def get_openapi_metadata(self):
+            return {
+                "format": "test-format",
+                "x-test": True,
+            }
+
+    field = fields.String(
+        validate=TestValidator(),
+    )
+
+    assert field.metadata["format"] == "test-format"
+    assert field.metadata["x-test"] is True
 
 
 @pytest.mark.parametrize(
