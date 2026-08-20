@@ -23,7 +23,6 @@ class RelationalSchema(Schema):
         left_field="minimum",
         operator=RelationalValidationOperator.LESS_THAN_OR_EQUAL,
         right_field="maximum",
-        message="Minimum must be less than or equal to maximum",
     )
     def validate_range(self, data: dict, **kwargs: dict) -> None:
         pass

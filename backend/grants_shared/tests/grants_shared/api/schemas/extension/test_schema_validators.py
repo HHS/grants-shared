@@ -7,7 +7,9 @@ from grants_shared.api.schemas.extension.schema_validators import (
     RelationalValidationOperator,
     relational_validation,
 )
-
+from grants_shared.api.schemas.extension.schema_validation_error import (
+    SchemaValidationError,
+)
 
 class RelationalSchema(Schema):
     left = fields.Integer(allow_none=True)
@@ -17,7 +19,6 @@ class RelationalSchema(Schema):
         left_field="left",
         operator=RelationalValidationOperator.LESS_THAN_OR_EQUAL,
         right_field="right",
-        message="Left must be less than or equal to right",
     )
     def validate_relationship(self, data: dict, **kwargs: dict) -> None:
         pass
@@ -54,7 +55,6 @@ def test_relational_validation_operator(
             left_field="left",
             operator=operator,
             right_field="right",
-            message="Relational validation failed",
         )
         def validate_relationship(self, data: dict, **kwargs: dict) -> None:
             pass
@@ -69,12 +69,37 @@ def test_relational_validation_operator(
             "right": right,
         }
     else:
+        expected_message = (
+            f"Relational validation failed: left "
+            f"must be {operator.value.replace('_', ' ')} right"
+        )
+
         with pytest.raises(
             ValidationError,
-            match="Relational validation failed",
+            match=expected_message,
         ):
             schema.load({"left": left, "right": right})
 
+
+def test_relational_validation_uses_invalid_comparison_error():
+    schema = RelationalSchema()
+
+    with pytest.raises(ValidationError) as exc_info:
+        schema.load(
+            {
+                "left": 10,
+                "right": 5,
+            }
+        )
+
+    errors = exc_info.value.messages
+    error = errors["_schema"][0]
+
+    assert error.key == SchemaValidationError.INVALID_COMPARISON
+    assert (
+        error.message
+        == "Relational validation failed: left must be less than or equal right"
+    )
 
 def test_relational_validation_skips_when_left_is_none():
     schema = RelationalSchema()
@@ -129,7 +154,6 @@ def test_relational_validation_calls_wrapped_function():
             left_field="left",
             operator=RelationalValidationOperator.LESS_THAN_OR_EQUAL,
             right_field="right",
-            message="Relational validation failed",
         )
         def validate_relationship(self, data: dict, **kwargs: dict) -> None:
             calls.append(data)

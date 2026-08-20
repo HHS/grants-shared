@@ -62,7 +62,6 @@ def relational_validation(
     left_field: str,
     operator: RelationalValidationOperator,
     right_field: str,
-    message: str,
 ) -> typing.Callable:
     """Create a Marshmallow schema-level validator comparing two fields.
 
@@ -75,7 +74,6 @@ def relational_validation(
             left_field="award_floor",
             operator=RelationalValidationOperator.LESS_THAN_OR_EQUAL,
             right_field="award_ceiling",
-            message="Award floor must be less than or equal to award ceiling",
         )
         def validate_award_values(
             self,
@@ -128,10 +126,16 @@ def relational_validation(
                 and right_value is not None
                 and not comparison(left_value, right_value)
             ):
+                comparison_str = operator.value.replace("_", " ")
+
+                message = (
+                    f"Relational validation failed: {left_field} "
+                    f"must be {comparison_str} {right_field}"
+                )
                 raise ValidationError(
                     [
                         MarshmallowErrorContainer(
-                            SchemaValidationError.INVALID,
+                            SchemaValidationError.INVALID_COMPARISON,
                             message,
                         )
                     ]

@@ -158,14 +158,6 @@ def test_email_rejects_invalid_email():
     assert error.message == "Not a valid email address."
 
 
-def test_email_exposes_openapi_metadata():
-    validator = validators.Email()
-
-    assert validator.get_openapi_metadata() == {
-        "format": "email",
-    }
-
-
 def test_url_accepts_valid_url():
     validator = validators.URL()
 

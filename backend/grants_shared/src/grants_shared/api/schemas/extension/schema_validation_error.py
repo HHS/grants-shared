@@ -8,6 +8,8 @@ class SchemaValidationError(StrEnum):
     NOT_NULL = "not_null"
     UNKNOWN = "unknown"
     INVALID = "invalid"
+    INVALID_COMPARISON = "invalid_comparison"
+    INVALID_TYPE = "invalid_type"
 
     FORMAT = "format"
     INVALID_CHOICE = "invalid_choice"
