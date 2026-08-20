@@ -18,12 +18,10 @@ class Schema(apiflask.Schema):  # noqa: TID251
         dict[str, str],
         {
             "type": MarshmallowErrorContainer(
-                key=SchemaValidationError.INVALID,
-                message="Invalid input type.",
+                key=SchemaValidationError.INVALID, message="Invalid input type."
             ),
             "unknown": MarshmallowErrorContainer(
-                key=SchemaValidationError.UNKNOWN,
-                message="Unknown field.",
+                key=SchemaValidationError.UNKNOWN, message="Unknown field."
             ),
         },
     )
