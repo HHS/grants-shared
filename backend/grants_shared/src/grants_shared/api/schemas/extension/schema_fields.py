@@ -61,16 +61,12 @@ class MixinField(original_fields.Field):
                 continue
 
             if not callable(get_openapi_metadata):
-                raise TypeError(
-                    "get_openapi_metadata must be callable"
-                )
+                raise TypeError("get_openapi_metadata must be callable")
 
             metadata = get_openapi_metadata()
 
             if not isinstance(metadata, dict):
-                raise TypeError(
-                    "get_openapi_metadata must return a dict"
-                )
+                raise TypeError("get_openapi_metadata must return a dict")
 
             self.metadata.update(metadata)
 

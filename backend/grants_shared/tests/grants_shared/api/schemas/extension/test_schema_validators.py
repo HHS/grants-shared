@@ -3,13 +3,12 @@ from marshmallow import ValidationError
 
 from grants_shared.api.schemas.extension import fields
 from grants_shared.api.schemas.extension.schema import Schema
+from grants_shared.api.schemas.extension.schema_validation_error import SchemaValidationError
 from grants_shared.api.schemas.extension.schema_validators import (
     RelationalValidationOperator,
     relational_validation,
 )
-from grants_shared.api.schemas.extension.schema_validation_error import (
-    SchemaValidationError,
-)
+
 
 class RelationalSchema(Schema):
     left = fields.Integer(allow_none=True)
@@ -96,10 +95,8 @@ def test_relational_validation_uses_invalid_comparison_error():
     error = errors["_schema"][0]
 
     assert error.key == SchemaValidationError.INVALID_COMPARISON
-    assert (
-        error.message
-        == "Relational validation failed: left must be less than or equal right"
-    )
+    assert error.message == "Relational validation failed: left must be less than or equal right"
+
 
 def test_relational_validation_skips_when_left_is_none():
     schema = RelationalSchema()
@@ -173,6 +170,7 @@ def test_relational_validation_calls_wrapped_function():
             "right": 2,
         }
     ]
+
 
 def test_field_rejects_non_callable_openapi_metadata():
     class BadValidator:
