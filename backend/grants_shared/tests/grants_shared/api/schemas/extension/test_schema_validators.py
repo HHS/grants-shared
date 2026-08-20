@@ -173,3 +173,31 @@ def test_relational_validation_calls_wrapped_function():
             "right": 2,
         }
     ]
+
+def test_field_rejects_non_callable_openapi_metadata():
+    class BadValidator:
+        get_openapi_metadata = "not-callable"
+
+        def __call__(self, value):
+            return value
+
+    with pytest.raises(
+        TypeError,
+        match="get_openapi_metadata must be callable",
+    ):
+        fields.String(validate=BadValidator())
+
+
+def test_field_rejects_non_dict_openapi_metadata():
+    class BadValidator:
+        def get_openapi_metadata(self):
+            return "not-a-dict"
+
+        def __call__(self, value):
+            return value
+
+    with pytest.raises(
+        TypeError,
+        match="get_openapi_metadata must return a dict",
+    ):
+        fields.String(validate=BadValidator())

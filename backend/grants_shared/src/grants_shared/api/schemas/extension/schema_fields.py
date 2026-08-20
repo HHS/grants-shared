@@ -57,8 +57,22 @@ class MixinField(original_fields.Field):
                 None,
             )
 
-            if get_openapi_metadata is not None:
-                self.metadata.update(get_openapi_metadata())
+            if get_openapi_metadata is None:
+                continue
+
+            if not callable(get_openapi_metadata):
+                raise TypeError(
+                    "get_openapi_metadata must be callable"
+                )
+
+            metadata = get_openapi_metadata()
+
+            if not isinstance(metadata, dict):
+                raise TypeError(
+                    "get_openapi_metadata must return a dict"
+                )
+
+            self.metadata.update(metadata)
 
         # The actual error mapping used for a specific instance
         self._error_mapping: dict[str, MarshmallowErrorContainer] = {}
