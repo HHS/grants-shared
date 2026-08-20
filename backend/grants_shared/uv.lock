@@ -467,7 +467,7 @@ wheels = [
 
 [[package]]
 name = "grants-shared"
-version = "0.3.2"
+version = "0.4.0"
 source = { virtual = "." }
 dependencies = [
     { name = "apiflask" },
@@ -489,6 +489,7 @@ dependencies = [
     { name = "pytz" },
     { name = "smart-open" },
     { name = "sqlalchemy", extra = ["mypy"] },
+    { name = "tenacity" },
 ]
 
 [package.dev-dependencies]
@@ -504,6 +505,7 @@ dev = [
     { name = "moto", extra = ["s3"] },
     { name = "mypy" },
     { name = "pytest" },
+    { name = "requests-mock" },
     { name = "ruff" },
     { name = "types-requests" },
 ]
@@ -529,6 +531,7 @@ requires-dist = [
     { name = "pytz", specifier = ">=2026.2,<2027" },
     { name = "smart-open", specifier = ">=7.6.0,<8" },
     { name = "sqlalchemy", extras = ["mypy"], specifier = ">=2.0.49,<3" },
+    { name = "tenacity", specifier = ">=8.0,<9" },
 ]
 
 [package.metadata.requires-dev]
@@ -544,6 +547,7 @@ dev = [
     { name = "moto", extras = ["s3"], specifier = ">=5.2.0,<6" },
     { name = "mypy", specifier = ">=1.20.2,<2" },
     { name = "pytest", specifier = ">=9.0.3,<10" },
+    { name = "requests-mock", specifier = ">=1.12.1,<2" },
     { name = "ruff", specifier = ">=0.15.12,<16" },
     { name = "types-requests", specifier = ">=2.33.0.20260503" },
 ]
@@ -1271,6 +1275,18 @@ wheels = [
 ]
 
 [[package]]
+name = "requests-mock"
+version = "1.12.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/92/32/587625f91f9a0a3d84688bf9cfc4b2480a7e8ec327cefd0ff2ac891fd2cf/requests-mock-1.12.1.tar.gz", hash = "sha256:e9e12e333b525156e82a3c852f22016b9158220d2f47454de9cae8a77d371401", size = 60901, upload-time = "2024-03-29T03:54:29.446Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/97/ec/889fbc557727da0c34a33850950310240f2040f3b1955175fdb2b36a8910/requests_mock-1.12.1-py2.py3-none-any.whl", hash = "sha256:b1e37054004cdd5e56c84454cc7df12b25f90f382159087f4b6915aaeef39563", size = 27695, upload-time = "2024-03-29T03:54:27.64Z" },
+]
+
+[[package]]
 name = "responses"
 version = "0.26.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1472,6 +1488,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a2/6d/90764092216fa560f6587f83bb70113a8ba510ba436c6476a2b47359057c/stevedore-5.7.0.tar.gz", hash = "sha256:31dd6fe6b3cbe921e21dcefabc9a5f1cf848cf538a1f27543721b8ca09948aa3", size = 516200, upload-time = "2026-02-20T13:27:06.765Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/69/06/36d260a695f383345ab5bbc3fd447249594ae2fa8dfd19c533d5ae23f46b/stevedore-5.7.0-py3-none-any.whl", hash = "sha256:fd25efbb32f1abb4c9e502f385f0018632baac11f9ee5d1b70f88cc5e22ad4ed", size = 54483, upload-time = "2026-02-20T13:27:05.561Z" },
+]
+
+[[package]]
+name = "tenacity"
+version = "8.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/4d/6a19536c50b849338fcbe9290d562b52cbdcf30d8963d3588a68a4107df1/tenacity-8.5.0.tar.gz", hash = "sha256:8bc6c0c8a09b31e6cad13c47afbed1a567518250a9a171418582ed8d9c20ca78", size = 47309, upload-time = "2024-07-05T07:25:31.836Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d2/3f/8ba87d9e287b9d385a02a7114ddcef61b26f86411e121c9003eb509a1773/tenacity-8.5.0-py3-none-any.whl", hash = "sha256:b594c2a5945830c267ce6b79a166228323ed52718f30302c1359836112346687", size = 28165, upload-time = "2024-07-05T07:25:29.591Z" },
 ]
 
 [[package]]
